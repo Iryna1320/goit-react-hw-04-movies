@@ -1,0 +1,12 @@
+.movieItem{
+    display: flex;    
+}
+
+.movieContent{
+    margin-left: 20px;
+    flex-direction: column;
+}
+
+.movieContentTitle{
+
+}
