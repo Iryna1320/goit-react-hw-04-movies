@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import FetchApi from '../../services/themovieApi';
 import MovieList from '../../components/MovieList';
 
 class HomePage extends Component {
@@ -7,12 +7,12 @@ class HomePage extends Component {
     movies: [],
   };
 
-  async componentDidMount() {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/trending/movie/day?api_key=d407875648143dbc537f3d16fab2b882&page=1`,
-    );
-
-    this.setState({ movies: response.data.results });
+  componentDidMount() {
+    FetchApi.getTrendingMovie()
+      .then(movie => {
+        this.setState({ movies: [...movie] });
+      })
+      .catch(error => console.log(error));
   }
 
   render() {

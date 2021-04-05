@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import { Redirect } from 'react-router-dom';
 import MovieList from '../../components/MovieList';
 import axios from 'axios';
 import styles from './MoviesPage.module.css';
@@ -7,12 +8,11 @@ class MoviesPage extends Component {
   state = {
     movies: [],
     query: '',
-    error: null,
   };
 
   componentDidMount() {
     if (this.props.location.search) {
-      this.fetchMovie(this.props.location.search);
+      this.fetchMovie(this.props.location.search.slice(7));
     }
   }
 

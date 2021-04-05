@@ -1,6 +1,7 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { NavLink, Route, Switch } from 'react-router-dom';
-import axios from 'axios';
+import FetchApi from '../../services/themovieApi';
+// import axios from 'axios';
 import routes from '../../routes';
 import styles from './MovieDetailsPage.module.css';
 
@@ -21,22 +22,27 @@ class MovieDetailsPage extends Component {
     vote_average: null,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     const { movieId } = this.props.match.params;
 
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}?api_key=d407875648143dbc537f3d16fab2b882`,
-    );
-    // console.log(response.data);
-    this.setState({ ...response.data });
+    FetchApi.getMovieDetails(movieId)
+      .then(movie => {
+        this.setState({ ...movie });
+      })
+      .catch(error => console.log(error));
   }
 
   handleGoBack = () => {
     const { location, history } = this.props;
 
-    // history.push(location.state.from);
+    if (location.state && location.state.from) {
+      return history.push(location.state.from);
+    }
 
-    history.push(location?.state?.from || routes.homePage);
+    history.push(routes.homePage);
+
+    // history.push(location.state.from);
+    // history.push(location?.state?.from || routes.homePage);
   };
 
   render() {
@@ -44,7 +50,6 @@ class MovieDetailsPage extends Component {
     // console.log(location);
     // const { movieId } = this.props.match.params;
     const { poster_path, title, genres, overview, vote_average } = this.state;
-    // const imageUrl = `https://image.tmdb.org/t/p/w500${poster_path}`;
 
     return (
       <div>
@@ -80,15 +85,29 @@ class MovieDetailsPage extends Component {
           <h2>Additional information</h2>
           <ul>
             <li>
-              <NavLink to={`${match.url}/cast`}>Cast</NavLink>
+              <NavLink
+                to={{
+                  pathname: `${match.url}/cast`,
+                  state: { ...this.props.location.state },
+                }}
+              >
+                Cast
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`${match.url}/reviews`}>Reviews</NavLink>
+              <NavLink
+                to={{
+                  pathname: `${match.url}/reviews`,
+                  state: { ...this.props.location.state },
+                }}
+              >
+                Reviews
+              </NavLink>
             </li>
           </ul>
         </div>
 
-        <Suspense>
+        <Suspense fallback={<h1>Loading...</h1>}>
           <Switch>
             <Route path={`${match.path}/cast`} component={Cast} />
             <Route path={`${match.path}/reviews`} component={Reviews} />

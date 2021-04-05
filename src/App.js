@@ -23,6 +23,7 @@ const App = () => (
         <Route exact path={routes.homePage} component={HomePage} />
         <Route exact path={routes.moviesPage} component={MoviesPage} />
         <Route path={routes.movieDetailsPage} component={MovieDetailsPage} />
+        <Route component={HomePage} />
       </Switch>
     </Suspense>
   </>
